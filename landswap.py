@@ -124,7 +124,7 @@ class LandSwap(tk.Tk):
 		self.mountain_frame = LandFrame(self, 'Mountain')
 		self.forest_frame = LandFrame(self, 'Forest')
 
-		for _, frame in self.land_frames.items():
+		for frame in self.land_frames.values():
 			frame.pack(side='left')
 			frame.disable()
 
@@ -174,7 +174,7 @@ class LandSwap(tk.Tk):
 		self.text_box.config(state='disabled')
 		self.text_box.focus_set()
 
-		for _, frame in self.land_frames.items():
+		for frame in self.land_frames.values():
 			frame.disable()
 
 		print('Decklist cleared')
