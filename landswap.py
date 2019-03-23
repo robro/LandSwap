@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import os
-import re
 import random
 import pyperclip as pyclip
 from tkinter import *
