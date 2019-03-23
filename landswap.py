@@ -128,7 +128,7 @@ class LandSwap(Tk):
 			return
 
 		validated = False
-		self.set_state(NORMAL, self.text_box)
+		self.text_box.config(state=NORMAL)
 		self.text_box.insert(END, clipboard)
 
 		print('Searching...')
@@ -146,7 +146,7 @@ class LandSwap(Tk):
 					print('Land found: %s' % land)
 					break
 
-		self.set_state(DISABLED, self.text_box)
+		self.text_box.config(state=DISABLED)
 		self.text_box.focus_set()
 
 		if validated:
@@ -156,9 +156,9 @@ class LandSwap(Tk):
 
 
 	def clear_text(self):
-		self.set_state(NORMAL, self.text_box)
+		self.text_box.config(state=NORMAL)
 		self.text_box.delete('1.0', END)
-		self.set_state(DISABLED, self.text_box)
+		self.text_box.config(state=DISABLED)
 		self.text_box.focus_set()
 
 		for _, frame in self.land_frames.items():
@@ -184,10 +184,10 @@ class LandSwap(Tk):
 		chars = len(event.widget.get('1.0', 'end-1c'))
 		if chars == 0:
 			self.set_state(DISABLED, self.decklist_import_button, self.clear_button, self.copy_clipboard_button)
-			self.set_state(NORMAL, self.decklist_import_button)
+			self.decklist_import_button.config(state=NORMAL)
 		else:
 			self.set_state(NORMAL, self.decklist_import_button, self.clear_button, self.copy_clipboard_button)
-			self.set_state(DISABLED, self.decklist_import_button)
+			self.decklist_import_button.config(state=DISABLED)
 
 
 	def on_land_change(self, land, land_type):
