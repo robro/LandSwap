@@ -34,13 +34,13 @@ class ModifiedText(ScrolledText):
 
 
 class LandFrame(Frame):
-	
-	images = {}
 
 	def __init__(self, master, land_type):
 		Frame.__init__(self, master)
 		self.master = master
 		self.land_type = land_type
+
+		self.images = {}
 
 		master.land_frames[land_type] = self
 
@@ -82,13 +82,14 @@ class LandFrame(Frame):
 
 class LandSwap(Tk):
 
-	land_frames = {}
 	max_decklist_chars = 100
 
 	def __init__(self, *args, **kwargs):
 		Tk.__init__(self, *args, **kwargs)
 
 		self.resizable(False, False)
+
+		self.land_frames = {}
 
 		# DECKLIST
 
@@ -113,26 +114,47 @@ class LandSwap(Tk):
 		# LANDS
 
 		self.plains_frame = LandFrame(self, 'Plains')
-		self.plains_frame.pack(side=LEFT, padx=10, pady=10)
-		self.plains_frame.disable()
+		self.island_frame = LandFrame(self, 'Island')
+		self.swamp_frame = LandFrame(self, 'Swamp')
+		self.mountain_frame = LandFrame(self, 'Mountain')
+		self.forest_frame = LandFrame(self, 'Forest')
+
+		for _, frame in self.land_frames.items():
+			frame.pack(side=LEFT)
+			frame.disable()
 
 
 	def import_decklist(self):
+		clipboard = pyclip.paste()
+		if not clipboard:
+			return
+
+		validated = False
 		self.set_state(NORMAL, self.text_box)
-		self.text_box.insert(END, pyclip.paste())
+		self.text_box.insert(END, clipboard)
+
+		print('Searching...')
 
 		for land_type in LANDS:
 			for land in LANDS[land_type]:
 				pos = self.text_box.search(land, '1.0', stopindex=END)
 				if pos:
+					if not validated:
+						validated = True
 					self.text_box.mark_set(land_type, pos)
 					self.text_box.mark_gravity(land_type, LEFT)
 					self.land_frames[land_type].land_var.set(land)
 					self.land_frames[land_type].enable()
+					print('Land found: %s' % land)
 					break
 
-		self.set_state(DISABLED, self.text_box, self.decklist_import_button)
+		self.set_state(DISABLED, self.text_box)
 		self.text_box.focus_set()
+
+		if validated:
+			print('Decklist imported successfully')
+		else:
+			print('No basic lands found')
 
 
 	def clear_text(self):
@@ -142,7 +164,9 @@ class LandSwap(Tk):
 		self.text_box.focus_set()
 
 		for _, frame in self.land_frames.items():
-			self.set_state(DISABLED, *frame.winfo_children())
+			frame.disable()
+
+		print('Decklist cleared')
 			
 
 	def copy_to_clipboard(self):
