@@ -81,6 +81,13 @@ class LandFrame(tk.Frame):
 class LandSwap(tk.Tk):
 
 	max_decklist_chars = 100
+	highlight_colors = {
+		'Plains': '#fcfcc1',
+		'Island': '#aeddf9',
+		'Swamp': '#b8b8b8',
+		'Mountain': '#ffb6b6',
+		'Forest': '#94e9bc'
+	}
 
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)
@@ -139,10 +146,16 @@ class LandSwap(tk.Tk):
 				if pos:
 					if not validated:
 						validated = True
+
 					self.text_box.mark_set(land_type, pos)
 					self.text_box.mark_gravity(land_type, 'left')
+
+					self.text_box.tag_add(land_type, pos + ' linestart', pos + ' lineend+1c')
+					self.text_box.tag_config(land_type, background=self.highlight_colors[land_type])
+
 					self.land_frames[land_type].land_var.set(land)
 					self.land_frames[land_type].enable()
+					
 					print('Land found: %s' % land)
 					break
 
@@ -198,6 +211,8 @@ class LandSwap(tk.Tk):
 		self.text_box.delete(land_type, land_type + ' lineend-1c')
 		self.text_box.insert(land_type, land.get())
 		self.text_box.config(state='disabled')
+
+		self.text_box.see(land_type)
 
 
 	def set_to_next(self, land_list, land, land_type):
