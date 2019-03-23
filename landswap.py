@@ -87,8 +87,6 @@ class LandSwap(Tk):
 
 		self.resizable(False, False)
 
-		self.land_frames = {}
-
 		# DECKLIST
 
 		self.decklist_frame = Frame(self)
@@ -110,6 +108,8 @@ class LandSwap(Tk):
 		self.set_state(DISABLED, self.clear_button, self.copy_clipboard_button, self.text_box)
 
 		# LANDS
+
+		self.land_frames = {}
 
 		self.plains_frame = LandFrame(self, 'Plains')
 		self.island_frame = LandFrame(self, 'Island')
@@ -195,7 +195,7 @@ class LandSwap(Tk):
 		frame.image_container.config(image=frame.images[land.get()])
 
 		self.text_box.config(state=NORMAL)
-		self.text_box.delete(land_type, land_type + ' lineend')
+		self.text_box.delete(land_type, land_type + ' lineend-1c')
 		self.text_box.insert(land_type, land.get())
 		self.text_box.config(state=DISABLED)
 
