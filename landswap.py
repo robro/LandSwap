@@ -84,7 +84,7 @@ class LandSwap(tk.Tk):
 	highlight_colors = {
 		'Plains': '#fcfcc1',
 		'Island': '#aeddf9',
-		'Swamp': '#b8b8b8',
+		'Swamp': '#c2c2c2',
 		'Mountain': '#ffb6b6',
 		'Forest': '#94e9bc'
 	}
