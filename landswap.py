@@ -80,7 +80,7 @@ class LandFrame(tk.Frame):
 
 class LandSwap(tk.Tk):
 
-	max_decklist_chars = 100
+	max_decklist_lines = 250
 	highlight_colors = {
 		'Plains': '#fcfcc1',
 		'Island': '#aeddf9',
@@ -110,7 +110,11 @@ class LandSwap(tk.Tk):
 
 		self.text_box = ModifiedText(self.decklist_frame, relief='flat', width=40, height=25, wrap='word')
 		self.text_box.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
+		self.text_box.tag_config('invalid', background='#fb7676')
 		self.text_box.bind('<<TextModified>>', self.on_text_modified)
+
+		for land_type, color in self.highlight_colors.items():
+			self.text_box.tag_config(land_type, background=color)
 
 		self.set_state('disabled', self.clear_button, self.copy_clipboard_button, self.text_box)
 
@@ -132,26 +136,62 @@ class LandSwap(tk.Tk):
 	def import_decklist(self):
 		clipboard = pyclip.paste()
 		if not clipboard:
+			print('No text found on clipboard')
 			return
 
-		validated = False
+		# DECKLIST VALIDATON
+
+		print('Importing from clipboard...')
+
 		self.text_box.config(state='normal')
+		self.text_box.delete('1.0', 'end')
 		self.text_box.insert('end', clipboard)
 
-		print('Searching...')
+		line_count = int(self.text_box.index('end-1c').split('.')[0])
+
+		if line_count > self.max_decklist_lines:
+			self.on_import_failed('Aborting: Maximum length exceeded (%d lines)' % self.max_decklist_lines)
+			return
+
+		valid_line_re = r'^\s*$|^\d+\s(?:\S+\s)+\([A-Z0-9]{3}\)\s[A-Z0-9]{1,3}\s*$'
+		invalid_line_count = 0
+		current_line = 1
+
+		while current_line <= line_count:
+			search_index = '%d.0' % current_line
+			if search_index == self.text_box.index('end-1c'):
+				# Don't bother searching last line if blank
+				break
+			valid_index = self.text_box.search(valid_line_re, search_index, stopindex=search_index + ' lineend', regexp=True)
+			if not valid_index:
+				self.text_box.tag_add('invalid', search_index, search_index + ' lineend+1c')
+				self.text_box.mark_set('invalid', search_index)
+				self.text_box.see('invalid')
+				invalid_line_count += 1
+
+			current_line += 1
+
+		if invalid_line_count:
+			self.on_import_failed('Aborting: Found (%d) invalid lines' % invalid_line_count)
+			return
+
+		print('Decklist imported successfully')
+		print('Searching for basic lands...')
+
+		# SEARCH FOR LANDS
+
+		land_found = False
 
 		for land_type in LANDS:
 			for land in LANDS[land_type]:
 				pos = self.text_box.search(land, '1.0', stopindex='end')
 				if pos:
-					if not validated:
-						validated = True
+					if not land_found:
+						land_found = True
 
 					self.text_box.mark_set(land_type, pos)
 					self.text_box.mark_gravity(land_type, 'left')
-
 					self.text_box.tag_add(land_type, pos + ' linestart', pos + ' lineend+1c')
-					self.text_box.tag_config(land_type, background=self.highlight_colors[land_type])
 
 					self.land_frames[land_type].land_var.set(land)
 					self.land_frames[land_type].enable()
@@ -159,25 +199,33 @@ class LandSwap(tk.Tk):
 					print('Land found: %s' % land)
 					break
 
+		print('Finished search')
+
+		if not land_found:
+			print('No basic lands found')
+
 		self.text_box.config(state='disabled')
 		self.text_box.focus_set()
 
-		if validated:
-			print('Decklist imported successfully')
-		else:
-			print('No basic lands found')
+
+	def on_import_failed(self, message):
+		print(message)
+		self.text_box.config(background=self.highlight_colors['Mountain'])
+		self.text_box.config(state='disabled')
+		self.text_box.focus_set()
 
 
 	def clear_text(self):
 		self.text_box.config(state='normal')
 		self.text_box.delete('1.0', 'end')
+		self.text_box.config(background='#ffffff')
 		self.text_box.config(state='disabled')
 		self.text_box.focus_set()
 
 		for frame in self.land_frames.values():
 			frame.disable()
 
-		print('Decklist cleared')
+		print('Decklist field cleared')
 			
 
 	def copy_to_clipboard(self):
@@ -211,13 +259,11 @@ class LandSwap(tk.Tk):
 		self.text_box.delete(land_type, land_type + ' lineend-1c')
 		self.text_box.insert(land_type, land.get())
 		self.text_box.config(state='disabled')
-
 		self.text_box.see(land_type)
 
 
 	def set_to_next(self, land_list, land, land_type):
 		index = land_list.index(land.get())
-
 		if (index + 1) >= len(land_list):
 			land.set(land_list[0])
 		else:
@@ -226,7 +272,6 @@ class LandSwap(tk.Tk):
 
 	def set_to_prev(self, land_list, land, land_type):
 		index = land_list.index(land.get())
-
 		if index == 0:
 			land.set(land_list[len(land_list) - 1])
 		else:
