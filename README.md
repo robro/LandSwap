@@ -27,7 +27,7 @@ In Bash you can also use:
 ```
 ./landswap.py
 ```
-After a moment the application window should appear. Click the `Import decklist` button in the upper left corner if you have already exported a decklist from MTGA or one of the various decklist sharing websites. The decklist should then appear in the text box below. If any basic lands were found they will be highlighted in the decklist and their images to the right will also be highlighted.
+After a moment the application window should appear. Click the `Import decklist` button in the upper left corner after first exporting a decklist from MTGA or one of the various decklist sharing websites. The decklist should then appear in the text box below. If any basic lands were found they will be highlighted in the decklist and their images to the right will also be highlighted.
 
 To change the land artwork, select the land of your choice from the dropdown menu below each image. Alternatively, use the `Prev` and `Next` buttons to cycle through the available options. The decklist will update automatically to reflect your changes.
 
