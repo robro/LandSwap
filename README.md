@@ -37,4 +37,4 @@ To import another decklist, click the `Clear` button to clear the current deckli
   
 ## Legal
   
-MTGA Basic Land Swapper is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
+MTGA Basic Land Swapper is unofficial Fan Content permitted under the [Fan Content Policy](https://company.wizards.com/fancontentpolicy). Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
