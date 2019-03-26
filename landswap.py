@@ -102,7 +102,7 @@ class LandSwap(tk.Tk):
 
 	background_colors = {
 		'default': '#ffffff',
-		'invalid': '#ffb6b6'
+		'invalid': '#ffdce0'
 	}
 
 	highlight_colors = {
@@ -111,7 +111,7 @@ class LandSwap(tk.Tk):
 		'Swamp': '#c2c2c2',
 		'Mountain': '#ffb6b6',
 		'Forest': '#94e9bc',
-		'invalid': '#fb7676'
+		'invalid': '#fdb8c0'
 	}
 
 	def __init__(self, *args, **kwargs):
