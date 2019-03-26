@@ -11,7 +11,7 @@ Easily change basic land art from exported MTGA decklists using a simple graphic
   - Manages dependencies and creates a virtual environment to run the app
   
 ## Installation
-If you don't already have Python 3.x, [download the latest version](https://www.python.org/downloads/) and run the installer, making sure that the **Add Python 3.x to PATH** option is checked. When finished, verify the installation by opening a command prompt (cmd.exe, Windows PowerShell, etc.) and running:
+If you don't already have Python 3.x, [download the latest version](https://www.python.org/downloads/) and run the installer, making sure that the **Add Python 3.x to PATH** option is checked. When finished, verify the installation by opening a command prompt (Windows PowerShell recommended) and running:
 ```
 python --version
 ```
@@ -19,7 +19,7 @@ Which should output something like `Python 3.7.3`. Next, if you don't already ha
 ```
 pip install pipenv
 ```
-Once installed, navigate to the application directory created either from cloning this repository or extracting the downloaded .zip file. Then simply run:
+Once installed, use `cd C:\path\to\application` to navigate to the folder created either from cloning this repository or extracting the downloaded ZIP file. Then simply run:
 ```
 pipenv install
 ```
