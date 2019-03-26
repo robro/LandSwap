@@ -110,7 +110,8 @@ class LandSwap(tk.Tk):
 		'Island': '#aeddf9',
 		'Swamp': '#c2c2c2',
 		'Mountain': '#ffb6b6',
-		'Forest': '#94e9bc'
+		'Forest': '#94e9bc',
+		'invalid': '#fb7676'
 	}
 
 	def __init__(self, *args, **kwargs):
@@ -134,7 +135,7 @@ class LandSwap(tk.Tk):
 
 		self.text_box = ModifiedText(self.decklist_frame, relief='flat', width=40, height=25, wrap='word')
 		self.text_box.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
-		self.text_box.tag_config('invalid', background='#fb7676')
+		self.text_box.tag_config('invalid', background=self.highlight_colors['invalid'])
 		self.text_box.bind('<<TextModified>>', self.on_text_modified)
 		self.text_box.bind_all('<<LandChange>>', self.on_land_change)
 
