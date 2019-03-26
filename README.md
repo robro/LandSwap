@@ -11,7 +11,7 @@ Easily change basic land art from exported MTGA decklists using a simple graphic
   - Manages dependencies and creates a virtual environment to run the app
   
 ## Installation
-If you don't already have Python 3.x, [download the latest version](https://www.python.org/downloads/) and run the installer, making sure that the **Add Python 3.x to PATH** option is checked. When finished, you will probably need to sign out first to update your environment variables. After signing back in, verify the installation by opening a shell and running:
+If you don't already have Python 3.x, [download the latest version](https://www.python.org/downloads/) and run the installer, making sure that the **Add Python 3.x to PATH** option is checked. When finished, verify the installation by opening a shell and running:
 ```
 $ python --version
 ```
