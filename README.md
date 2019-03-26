@@ -19,7 +19,7 @@ Which should output something like `Python 3.7.3`. Next, if you don't already ha
 ```
 pip install pipenv
 ```
-Once installed, use `cd C:\path\to\application` to navigate to the folder created either from cloning this repository or extracting the downloaded ZIP file. Then simply run:
+Once installed, use `cd 'C:\path\to\application'` to navigate to the folder created either from cloning this repository or extracting the downloaded ZIP file. Then simply run:
 ```
 pipenv install
 ```
