@@ -11,24 +11,24 @@ Easily change basic land art from exported MTGA decklists using a simple graphic
   - Manages dependencies and creates a virtual environment to run the app
   
 ## Installation
-If you don't already have Python 3.x, [download the latest version](https://www.python.org/downloads/) and run the installer, making sure that the **Add Python 3.x to PATH** option is checked. When finished, verify the installation by opening a shell and running:
+If you don't already have Python 3.x, [download the latest version](https://www.python.org/downloads/) and run the installer, making sure that the **Add Python 3.x to PATH** option is checked. When finished, verify the installation by opening a command prompt (cmd.exe, Windows PowerShell, etc.) and running:
 ```
-$ python --version
+python --version
 ```
 Which should output something like `Python 3.7.3`. Next, if you don't already have [Pipenv](https://github.com/pypa/pipenv), install it by running:
 ```
-$ pip install pipenv
+pip install pipenv
 ```
 Once installed, navigate to the application directory created either from cloning this repository or extracting the downloaded .zip file. Then simply run:
 ```
-$ pipenv install
+pipenv install
 ```
 This creates a virtual environment and installs all dependencies for this project. It might take a bit but when finished you will be ready to run the app!
 
 ## Usage
 If you've followed the installation instructions above, navigate to the application directory and run:
 ```
-$ pipenv run python landswap.py
+pipenv run python landswap.py
 ```
 After a moment the application window should appear. Click the `Import decklist` button in the upper left corner after first exporting a decklist from MTGA or one of the various decklist sharing websites. The decklist should then appear in the text box below. If any basic lands were found they will be highlighted in the decklist and their images to the right will also be highlighted.
 
