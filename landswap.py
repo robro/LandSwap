@@ -38,39 +38,41 @@ class LandFrame(tk.Frame):
 		self.master = master
 		self.land_type = land_type
 
-		self.images = {}
-
-		master.land_frames[land_type] = self
+		self.land_list = list(LANDS[land_type].keys())
+		self.land_images = {}
 
 		for land, path in LANDS[land_type].items():
 			image = Image.open(path).resize((256, 359), resample=Image.LANCZOS)
-			self.images[land] = ImageTk.PhotoImage(image)
+			self.land_images[land] = ImageTk.PhotoImage(image)
 
-		self.land_list = list(self.images.keys())
 		self.image_container = ttk.Label(self)
-
-		self.land_var = tk.StringVar(self)
-		self.land_var.trace('w', lambda *_: master.on_land_change(self.land_var, land_type))
-		self.land_var.set(random.choice(list(LANDS[land_type])))
-
-		self.image_container.config(image=self.images[self.land_var.get()])
 		self.image_container.grid(row=0, column=0, sticky='s', padx=10, pady=10)
 
-		self.land_dropdown = ttk.Combobox(self, width=20, textvariable=self.land_var, values=self.land_list, state='readonly')
+		self.land_info = tk.StringVar(self)
+		self.land_info.trace('w', lambda *_: self.set_land_image())
+		self.land_info.set(random.choice(list(self.land_images)))
+
+		self.land_dropdown = ttk.Combobox(self, width=20, textvariable=self.land_info, values=self.land_list, state='readonly')
 		self.land_dropdown.grid(row=1, column=0, sticky='w', padx=15, pady=10)
 
-		self.prev_button = ttk.Button(self, text='Prev', width=6, command=lambda: master.set_to_prev(self.land_list, self.land_var, land_type))
+		self.prev_button = ttk.Button(self, text='Prev', width=6, command=self.set_to_prev)
 		self.prev_button.grid(row=1, column=0, sticky='e', padx=65)
 
-		self.next_button = ttk.Button(self, text='Next', width=6, command=lambda: master.set_to_next(self.land_list, self.land_var, land_type))
+		self.next_button = ttk.Button(self, text='Next', width=6, command=self.set_to_next)
 		self.next_button.grid(row=1, column=0, sticky='e', padx=15)
 
 
+	def set_land_image(self):
+		self.image_container.config(image=self.land_images[self.land_info.get()])
+		self.event_generate('<<LandChange>>')
+		
+
 	def enable(self):
-		self.image_container.config(state='normal')
-		self.land_dropdown.config(state='readonly')
-		self.prev_button.config(state='normal')
-		self.next_button.config(state='normal')
+		for widget in self.winfo_children():
+			if widget.winfo_name() == '!combobox':
+				widget.config(state='readonly')
+			else:
+				widget.config(state='normal')
 
 
 	def disable(self):
@@ -78,9 +80,31 @@ class LandFrame(tk.Frame):
 			widget.config(state='disabled')
 
 
+	def set_to_next(self):
+		index = self.land_list.index(self.land_info.get())
+		if (index + 1) >= len(self.land_list):
+			self.land_info.set(self.land_list[0])
+		else:
+			self.land_info.set(self.land_list[index + 1])
+
+
+	def set_to_prev(self):
+		index = self.land_list.index(self.land_info.get())
+		if index == 0:
+			self.land_info.set(self.land_list[len(self.land_list) - 1])
+		else:
+			self.land_info.set(self.land_list[index - 1])
+
+
 class LandSwap(tk.Tk):
 
 	max_decklist_lines = 250
+
+	background_colors = {
+		'default': '#ffffff',
+		'invalid': '#ffb6b6'
+	}
+
 	highlight_colors = {
 		'Plains': '#fcfcc1',
 		'Island': '#aeddf9',
@@ -112,6 +136,7 @@ class LandSwap(tk.Tk):
 		self.text_box.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
 		self.text_box.tag_config('invalid', background='#fb7676')
 		self.text_box.bind('<<TextModified>>', self.on_text_modified)
+		self.text_box.bind_all('<<LandChange>>', self.on_land_change)
 
 		for land_type, color in self.highlight_colors.items():
 			self.text_box.tag_config(land_type, background=color)
@@ -120,13 +145,13 @@ class LandSwap(tk.Tk):
 
 		# LANDS
 
-		self.land_frames = {}
-
-		self.plains_frame = LandFrame(self, 'Plains')
-		self.island_frame = LandFrame(self, 'Island')
-		self.swamp_frame = LandFrame(self, 'Swamp')
-		self.mountain_frame = LandFrame(self, 'Mountain')
-		self.forest_frame = LandFrame(self, 'Forest')
+		self.land_frames = {
+			'Plains': LandFrame(self, 'Plains'),
+			'Island': LandFrame(self, 'Island'),
+			'Swamp': LandFrame(self, 'Swamp'),
+			'Mountain': LandFrame(self, 'Mountain'),
+			'Forest': LandFrame(self, 'Forest')
+		}
 
 		for frame in self.land_frames.values():
 			frame.pack(side='left')
@@ -193,7 +218,7 @@ class LandSwap(tk.Tk):
 					self.text_box.mark_gravity(land_type, 'left')
 					self.text_box.tag_add(land_type, pos + ' linestart', pos + ' lineend+1c')
 
-					self.land_frames[land_type].land_var.set(land)
+					self.land_frames[land_type].land_info.set(land)
 					self.land_frames[land_type].enable()
 					
 					print('Land found: %s' % land)
@@ -210,7 +235,7 @@ class LandSwap(tk.Tk):
 
 	def on_import_failed(self, message):
 		print(message)
-		self.text_box.config(background=self.highlight_colors['Mountain'])
+		self.text_box.config(background=self.background_colors['invalid'])
 		self.text_box.config(state='disabled')
 		self.text_box.focus_set()
 
@@ -218,7 +243,7 @@ class LandSwap(tk.Tk):
 	def clear_text(self):
 		self.text_box.config(state='normal')
 		self.text_box.delete('1.0', 'end')
-		self.text_box.config(background='#ffffff')
+		self.text_box.config(background=self.background_colors['default'])
 		self.text_box.config(state='disabled')
 		self.text_box.focus_set()
 
@@ -242,8 +267,7 @@ class LandSwap(tk.Tk):
 
 
 	def on_text_modified(self, event):
-		chars = len(event.widget.get('1.0', 'end-1c'))
-		if chars == 0:
+		if self.text_box.compare('end-1c', '==', '1.0'):
 			self.set_state('disabled', self.decklist_import_button, self.clear_button, self.copy_clipboard_button)
 			self.decklist_import_button.config(state='normal')
 		else:
@@ -251,31 +275,18 @@ class LandSwap(tk.Tk):
 			self.decklist_import_button.config(state='disabled')
 
 
-	def on_land_change(self, land, land_type):
-		frame = self.land_frames[land_type]
-		frame.image_container.config(image=frame.images[land.get()])
-
+	def on_land_change(self, event):
+		# Do nothing if text box is empty
+		if self.text_box.compare('end-1c', '==', '1.0'):
+			return
+		land_type = event.widget.land_type
+		land = event.widget.land_info
+		
 		self.text_box.config(state='normal')
 		self.text_box.delete(land_type, land_type + ' lineend-1c')
 		self.text_box.insert(land_type, land.get())
 		self.text_box.config(state='disabled')
 		self.text_box.see(land_type)
-
-
-	def set_to_next(self, land_list, land, land_type):
-		index = land_list.index(land.get())
-		if (index + 1) >= len(land_list):
-			land.set(land_list[0])
-		else:
-			land.set(land_list[index + 1])
-
-
-	def set_to_prev(self, land_list, land, land_type):
-		index = land_list.index(land.get())
-		if index == 0:
-			land.set(land_list[len(land_list) - 1])
-		else:
-			land.set(land_list[index - 1])
 
 
 def main():
