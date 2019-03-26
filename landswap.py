@@ -269,10 +269,10 @@ class LandSwap(tk.Tk):
 
 	def on_text_modified(self, event):
 		if self.text_box.compare('end-1c', '==', '1.0'):
-			self.set_state('disabled', self.decklist_import_button, self.clear_button, self.copy_clipboard_button)
+			self.set_state('disabled', self.clear_button, self.copy_clipboard_button)
 			self.decklist_import_button.config(state='normal')
 		else:
-			self.set_state('normal', self.decklist_import_button, self.clear_button, self.copy_clipboard_button)
+			self.set_state('normal', self.clear_button, self.copy_clipboard_button)
 			self.decklist_import_button.config(state='disabled')
 
 
