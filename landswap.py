@@ -135,12 +135,11 @@ class LandSwap(tk.Tk):
 
 		self.text_box = ModifiedText(self.decklist_frame, relief='flat', width=40, height=25, wrap='word')
 		self.text_box.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
-		self.text_box.tag_config('invalid', background=self.highlight_colors['invalid'])
 		self.text_box.bind('<<TextModified>>', self.on_text_modified)
 		self.text_box.bind_all('<<LandChange>>', self.on_land_change)
 
-		for land_type, color in self.highlight_colors.items():
-			self.text_box.tag_config(land_type, background=color)
+		for tag, color in self.highlight_colors.items():
+			self.text_box.tag_config(tag, background=color)
 
 		self.set_state('disabled', self.clear_button, self.copy_clipboard_button, self.text_box)
 
