@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 from PIL import ImageTk, Image
+from os.path import abspath, join, dirname
 
 from lands import LANDS
 
@@ -42,7 +43,9 @@ class LandFrame(tk.Frame):
 		self.land_images = {}
 
 		for land, path in LANDS[land_type].items():
-			image = Image.open(path).resize((256, 359), resample=Image.LANCZOS)
+			full_path = join(dirname(abspath(__file__)), path)
+			print('Loading image:', full_path)
+			image = Image.open(full_path).resize((256, 359), resample=Image.LANCZOS)
 			self.land_images[land] = ImageTk.PhotoImage(image)
 
 		self.image_container = ttk.Label(self)
