@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import sys
 import random
 import pyperclip as pyclip
 import tkinter as tk
@@ -42,8 +43,15 @@ class LandFrame(tk.Frame):
 		self.land_list = list(LANDS[land_type].keys())
 		self.land_images = {}
 
+		if getattr(sys, 'frozen', False):
+			# The application is frozen
+			self.app_path = dirname(abspath(sys.executable))
+		else:
+			# The application is not frozen
+			self.app_path = dirname(abspath(__file__))
+
 		for land, path in LANDS[land_type].items():
-			full_path = join(dirname(abspath(__file__)), path)
+			full_path = join(self.app_path, path)
 			print('Loading image:', full_path)
 			image = Image.open(full_path).resize((256, 359), resample=Image.LANCZOS)
 			self.land_images[land] = ImageTk.PhotoImage(image)
