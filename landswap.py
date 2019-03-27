@@ -224,7 +224,7 @@ class LandSwap(tk.Tk):
 					self.land_frames[land_type].land_info.set(land)
 					self.land_frames[land_type].enable()
 					
-					print('Land found: %s' % land)
+					print('Land found:', land)
 					break
 
 		print('Finished search')
