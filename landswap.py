@@ -10,6 +10,13 @@ from os.path import abspath, join, dirname
 
 from lands import LANDS
 
+if getattr(sys, 'frozen', False):
+	# The application is frozen
+	APP_PATH = dirname(abspath(sys.executable))
+else:
+	# The application is not frozen
+	APP_PATH = dirname(abspath(__file__))
+
 
 class ModifiedText(ScrolledText):
 
@@ -43,15 +50,8 @@ class LandFrame(tk.Frame):
 		self.land_list = list(LANDS[land_type].keys())
 		self.land_images = {}
 
-		if getattr(sys, 'frozen', False):
-			# The application is frozen
-			self.app_path = dirname(abspath(sys.executable))
-		else:
-			# The application is not frozen
-			self.app_path = dirname(abspath(__file__))
-
 		for land, path in LANDS[land_type].items():
-			full_path = join(self.app_path, path)
+			full_path = join(APP_PATH, path)
 			print('Loading image:', full_path)
 			self.land_images[land] = ImageTk.PhotoImage(Image.open(full_path))
 
@@ -300,15 +300,8 @@ class LandSwap(tk.Tk):
 
 
 def main():
-	if getattr(sys, 'frozen', False):
-		# The application is frozen
-		icon_path = join(dirname(abspath(sys.executable)), 'icon.ico')
-	else:
-		# The application is not frozen
-		icon_path = join(dirname(abspath(__file__)), 'icon.ico')
-
 	land_swap = LandSwap()
-	land_swap.iconbitmap(icon_path)
+	land_swap.iconbitmap(join(APP_PATH, 'icon.ico'))
 	land_swap.title('MTGA Basic Land Swapper')
 	land_swap.mainloop()
 
