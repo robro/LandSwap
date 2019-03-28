@@ -301,7 +301,15 @@ class LandSwap(tk.Tk):
 
 
 def main():
+	if getattr(sys, 'frozen', False):
+		# The application is frozen
+		icon_path = join(dirname(abspath(sys.executable)), 'icon.ico')
+	else:
+		# The application is not frozen
+		icon_path = join(dirname(abspath(__file__)), 'icon.ico')
+
 	land_swap = LandSwap()
+	land_swap.iconbitmap(icon_path)
 	land_swap.title('MTGA Basic Land Swapper')
 	land_swap.mainloop()
 
