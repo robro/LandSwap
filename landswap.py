@@ -53,8 +53,7 @@ class LandFrame(tk.Frame):
 		for land, path in LANDS[land_type].items():
 			full_path = join(self.app_path, path)
 			print('Loading image:', full_path)
-			image = Image.open(full_path).resize((256, 359), resample=Image.LANCZOS)
-			self.land_images[land] = ImageTk.PhotoImage(image)
+			self.land_images[land] = ImageTk.PhotoImage(Image.open(full_path))
 
 		self.image_container = ttk.Label(self)
 		self.image_container.grid(row=0, column=0, sticky='s', padx=10, pady=10)
