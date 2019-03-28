@@ -1,8 +1,8 @@
-# MTGA Basic Land Swapper
+# LandSwap
 
 Easily change basic land art from exported MTGA decklists using a simple graphical interface.
 
-![screenshot](screenshot.png?raw=true "MTGA Basic Land Swapper")
+![screenshot](screenshot.png?raw=true "LandSwap")
 
 ## Prerequisites
 - [**Python 3.x**](https://www.python.org/downloads/)
@@ -39,4 +39,4 @@ When you're finished, click the `Copy to clipboard` button and then import the n
 To import another decklist, click the `Clear` button to clear the current decklist and start over.
   
 ## Legal
-MTGA Basic Land Swapper is unofficial Fan Content permitted under the [Fan Content Policy](https://company.wizards.com/fancontentpolicy). Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
+LandSwap is unofficial Fan Content permitted under the [Fan Content Policy](https://company.wizards.com/fancontentpolicy). Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
