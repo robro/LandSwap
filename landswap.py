@@ -1,21 +1,22 @@
 #!/usr/bin/env python
 import sys
+import os.path
 import random
 import pyperclip as pyclip
 import tkinter as tk
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 from PIL import ImageTk, Image
-from os.path import abspath, join, dirname
-
-from lands import LANDS
+from glob import glob
 
 if getattr(sys, 'frozen', False):
 	# The application is frozen
-	APP_PATH = dirname(abspath(sys.executable))
+	APP_PATH = os.path.dirname(os.path.abspath(sys.executable))
 else:
 	# The application is not frozen
-	APP_PATH = dirname(abspath(__file__))
+	APP_PATH = os.path.dirname(os.path.abspath(__file__))
+
+IMG_DIR = 'images'
 
 
 class ModifiedText(ScrolledText):
@@ -47,22 +48,21 @@ class LandFrame(tk.Frame):
 		self.master = master
 		self.land_type = land_type
 
-		self.land_list = list(LANDS[land_type].keys())
-		self.land_images = {}
+		self.land_images = {
+			os.path.splitext(os.path.basename(path))[0]: ImageTk.PhotoImage(Image.open(path))
+			for path in glob(os.path.join(os.path.join(APP_PATH, IMG_DIR), land_type + '/*.png'))
+		}
 
-		for land, path in LANDS[land_type].items():
-			full_path = join(APP_PATH, path)
-			print('Loading image:', full_path)
-			self.land_images[land] = ImageTk.PhotoImage(Image.open(full_path))
+		self.land_names = list(self.land_images.keys())
 
 		self.image_container = ttk.Label(self)
 		self.image_container.grid(row=0, column=0, sticky='s', padx=10, pady=10)
 
 		self.land_info = tk.StringVar(self)
 		self.land_info.trace('w', lambda *_: self.set_land_image())
-		self.land_info.set(random.choice(list(self.land_images)))
+		self.land_info.set(random.choice(self.land_names))
 
-		self.land_dropdown = ttk.Combobox(self, width=20, textvariable=self.land_info, values=self.land_list, state='readonly')
+		self.land_dropdown = ttk.Combobox(self, width=20, textvariable=self.land_info, values=self.land_names, state='readonly')
 		self.land_dropdown.grid(row=1, column=0, sticky='w', padx=15, pady=10)
 
 		self.prev_button = ttk.Button(self, text='Prev', width=6, command=self.set_to_prev)
@@ -91,19 +91,19 @@ class LandFrame(tk.Frame):
 
 
 	def set_to_next(self):
-		index = self.land_list.index(self.land_info.get())
-		if (index + 1) >= len(self.land_list):
-			self.land_info.set(self.land_list[0])
+		index = self.land_names.index(self.land_info.get())
+		if (index + 1) >= len(self.land_names):
+			self.land_info.set(self.land_names[0])
 		else:
-			self.land_info.set(self.land_list[index + 1])
+			self.land_info.set(self.land_names[index + 1])
 
 
 	def set_to_prev(self):
-		index = self.land_list.index(self.land_info.get())
+		index = self.land_names.index(self.land_info.get())
 		if index == 0:
-			self.land_info.set(self.land_list[len(self.land_list) - 1])
+			self.land_info.set(self.land_names[len(self.land_names) - 1])
 		else:
-			self.land_info.set(self.land_list[index - 1])
+			self.land_info.set(self.land_names[index - 1])
 
 
 class LandSwap(tk.Tk):
@@ -123,6 +123,14 @@ class LandSwap(tk.Tk):
 		'Forest': '#94e9bc',
 		'invalid': '#fdb8c0'
 	}
+
+	land_types = [
+		'Plains',
+		'Island',
+		'Swamp',
+		'Mountain',
+		'Forest'
+	]
 
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)
@@ -155,13 +163,7 @@ class LandSwap(tk.Tk):
 
 		# LANDS
 
-		self.land_frames = {
-			'Plains': LandFrame(self, 'Plains'),
-			'Island': LandFrame(self, 'Island'),
-			'Swamp': LandFrame(self, 'Swamp'),
-			'Mountain': LandFrame(self, 'Mountain'),
-			'Forest': LandFrame(self, 'Forest')
-		}
+		self.land_frames = {land_type: LandFrame(self, land_type) for land_type in self.land_types}
 
 		for frame in self.land_frames.values():
 			frame.pack(side='left')
@@ -217,8 +219,8 @@ class LandSwap(tk.Tk):
 
 		land_found = False
 
-		for land_type in LANDS:
-			for land in LANDS[land_type]:
+		for land_type in self.land_types:
+			for land in self.land_frames[land_type].land_names:
 				pos = self.text_box.search(land, '1.0', stopindex='end')
 				if pos:
 					if not land_found:
@@ -301,7 +303,7 @@ class LandSwap(tk.Tk):
 
 def main():
 	land_swap = LandSwap()
-	land_swap.iconbitmap(join(APP_PATH, 'icon.ico'))
+	land_swap.iconbitmap(os.path.join(APP_PATH, 'icon.ico'))
 	land_swap.title('LandSwap')
 	land_swap.mainloop()
 
