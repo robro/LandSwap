@@ -302,7 +302,7 @@ class LandSwap(tk.Tk):
 def main():
 	land_swap = LandSwap()
 	land_swap.iconbitmap(join(APP_PATH, 'icon.ico'))
-	land_swap.title('MTGA Basic Land Swapper')
+	land_swap.title('LandSwap')
 	land_swap.mainloop()
 
 
