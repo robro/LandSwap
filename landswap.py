@@ -18,7 +18,7 @@ else:
 
 IMG_DIR = 'images'
 
-VERSION = '0.2.2'
+VERSION = '0.2.3'
 
 
 class ModifiedText(ScrolledText):
@@ -60,7 +60,7 @@ class LandFrame(tk.Frame):
 		self.image_container = ttk.Label(self)
 		self.image_container.grid(row=0, column=0, sticky='s', padx=10, pady=10)
 
-		self.land_info = tk.StringVar(self)
+		self.land_info = tk.StringVar()
 		self.land_info.trace('w', lambda *_: self.set_land_image())
 		self.land_info.set(random.choice(self.land_names))
 
@@ -153,7 +153,7 @@ class LandSwap(tk.Tk):
 		self.copy_clipboard_button = ttk.Button(self.decklist_frame, text='Copy to clipboard', width=17, command=self.copy_to_clipboard)
 		self.copy_clipboard_button.grid(row=0, column=1, sticky='e', padx=5, pady=5)
 
-		self.text_box = ModifiedText(self.decklist_frame, relief='flat', width=40, height=25, wrap='word')
+		self.text_box = ModifiedText(self.decklist_frame, relief='flat', width=40, height=23, wrap='word', cursor='arrow')
 		self.text_box.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
 		self.text_box.bind('<<TextModified>>', self.on_text_modified)
 		self.text_box.bind_all('<<LandChange>>', self.on_land_change)
