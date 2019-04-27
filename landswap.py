@@ -18,7 +18,7 @@ else:
 
 IMG_DIR = 'images'
 
-VERSION = '0.2.3'
+VERSION = '0.2.4'
 
 
 class ModifiedText(ScrolledText):
